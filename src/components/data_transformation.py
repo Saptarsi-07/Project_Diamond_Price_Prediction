@@ -34,6 +34,8 @@ class DataTransformation:
             # Categorical and numerical columns
             cat_feature=['cut','color','clarity']
             num_feature=['carat','depth','table','x','y','z']
+            imp_num_feature=['carat','y','DR','C/A']
+            
 
             cut_rank=['Fair','Good','Very Good','Premium','Ideal']
             color_rank=['D','E','F','G','H','I','J']
@@ -63,7 +65,7 @@ class DataTransformation:
 
 
             preprocessor=ColumnTransformer([
-                    ('num_pipeline',num_pipeline,num_feature),
+                    ('num_pipeline',num_pipeline,imp_num_feature),
                     ('cat_pipeline',cat_pipeline,cat_feature)
             ])
 
@@ -92,6 +94,22 @@ class DataTransformation:
 
             target_column='price'
             drop_column=[target_column,'id']
+
+            def featureAdd(df):
+                for i in ['x','y','z']:
+                    df[i]=df[i].replace(0,df[i].median())
+    
+                for i in ['x','y','z']:
+                     df[i]=np.log(df[i])
+
+
+                df['C/A']=(df['carat'])/(df['depth']*df['table'])
+                df['DR']=(df['depth']/df['x'])
+
+                return df
+            
+            train_df=featureAdd(train_df)
+            test_df=featureAdd(test_df)
             
             #Dividing into independent and dependent features
 
