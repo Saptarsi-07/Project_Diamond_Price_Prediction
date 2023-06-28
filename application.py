@@ -13,7 +13,7 @@ def home_page():
 @app.route('/predict',methods=['GET',"POST"])
 def predict_datapoint():
     if request.method=='GET':
-        return render_template('form.html')
+        return render_template('form2.html')
     
 
     else:
@@ -34,8 +34,9 @@ def predict_datapoint():
         pred=predict_pipeline.predict(final_new_data)
 
         result=round(pred[0],2)
+        final_result= 'The predicted price is $ '+str(float(result))
 
-        return render_template('form.html',final_result=result)
+        return render_template('form2.html',final_result=final_result)
     
 
 

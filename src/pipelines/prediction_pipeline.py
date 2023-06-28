@@ -4,6 +4,8 @@ from src.exception import CustomException
 from src.logger import logging
 from src.utils import load_object
 import pandas as pd
+from src.utils import featureAdd
+
 
 
 class PredictPipeline:
@@ -18,8 +20,10 @@ class PredictPipeline:
 
             preprocessor=load_object(preprocessor_path)
             model=load_object(model_path)
-
+            
+            features=featureAdd(features)
             data_scaled=preprocessor.transform(features)
+
 
             pred=model.predict(data_scaled)
             return pred

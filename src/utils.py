@@ -6,8 +6,23 @@ import pandas as pd
 
 from src.exception import CustomException
 from src.logger import logging
+from sklearn.base import BaseEstimator, TransformerMixin
 
 from sklearn.metrics import r2_score
+
+def featureAdd(df):
+    for i in ['x','y','z']:
+        df[i]=df[i].replace(0,df[i].median())
+    
+    for i in ['x','y','z']:
+        df[i]=np.log(df[i])
+
+
+    df['C/A']=(df['carat'])/(df['depth']*df['table'])
+    df['DR']=(df['depth']/df['x'])
+
+    return df
+            
 
 def save_object(file_path,obj):
     try:

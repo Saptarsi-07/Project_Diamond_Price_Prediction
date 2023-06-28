@@ -1,6 +1,8 @@
 from sklearn.impute import SimpleImputer #Handling missing values
 from sklearn.preprocessing import StandardScaler #Feature Scaling
 from sklearn.preprocessing import OrdinalEncoder #Encoding categorical variable
+from src.utils import featureAdd
+
 
 
 #Pipelines
@@ -19,6 +21,8 @@ import os
 from dataclasses import dataclass
 
 from src.utils import save_object
+
+
 @dataclass
 class DataTransformationConfig:
     preprocessor_obj_file_path=os.path.join('artifacts','preprocessor.pkl')
@@ -95,33 +99,28 @@ class DataTransformation:
             target_column='price'
             drop_column=[target_column,'id']
 
-            def featureAdd(df):
-                for i in ['x','y','z']:
-                    df[i]=df[i].replace(0,df[i].median())
-    
-                for i in ['x','y','z']:
-                     df[i]=np.log(df[i])
-
-
-                df['C/A']=(df['carat'])/(df['depth']*df['table'])
-                df['DR']=(df['depth']/df['x'])
-
-                return df
             
-            train_df=featureAdd(train_df)
-            test_df=featureAdd(test_df)
+
+            
             
             #Dividing into independent and dependent features
 
             # Train data
             input_feature_train_df=train_df.drop(columns=drop_column,axis=1)
             target_feature_train_df=train_df[target_column]
+            input_feature_train_df=featureAdd(input_feature_train_df)
+            
+
 
             # Test data
             input_feature_test_df=test_df.drop(columns=drop_column,axis=1)
             target_feature_test_df=test_df[target_column]
+            input_feature_test_df=featureAdd(input_feature_test_df)
+
+           
 
             # Data Transformation
+
 
             input_feature_train_arr=preprocessing_obj.fit_transform(input_feature_train_df)
             input_feature_test_arr=preprocessing_obj.transform(input_feature_test_df)
